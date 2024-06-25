@@ -1,0 +1,18 @@
+[submodule "thir"]
+	path = thir
+	url = https://github.com/Jiayuan-Gu/torkit3d.git
+[submodule "torkit3d"]
+	path = torkit3d
+	url = https://github.com/Jiayuan-Gu/torkit3d.git
+[submodule "apex"]
+	path = apex
+	url = https://github.com/NVIDIA/apex.git
+[submodule "third_party/tapex"]
+	path = third_party/tapex
+	url = https://github.com/NVIDIA/apex.git
+[submodule "third_party/apex"]
+	path = third_party/apex
+	url = https://github.com/NVIDIA/apex.git
+[submodule "third_party/torkit3d"]
+	path = third_party/torkit3d
+	url = https://github.com/Jiayuan-Gu/torkit3d.git
