@@ -78,3 +78,16 @@ The performance of the Hugging Face demo is limited by data transfer and a share
 
 ### Acknowledgement
 We refer to [SAM](https://github.com/facebookresearch/segment-anything), [Uni3D](https://github.com/baaivision/Uni3D) and [OpenShape](https://github.com/Colin97/OpenShape_code) while developing Point-SAM. Thanks for these awesome works. We also thank @YouJiacheng for providing constructive suggestions for the data engine design.
+
+### Citation
+```
+@misc{zhou2024pointsampromptable3dsegmentation,
+      title={Point-SAM: Promptable 3D Segmentation Model for Point Clouds}, 
+      author={Yuchen Zhou and Jiayuan Gu and Tung Yen Chiang and Fanbo Xiang and Hao Su},
+      year={2024},
+      eprint={2406.17741},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+      url={https://arxiv.org/abs/2406.17741}, 
+}
+```
