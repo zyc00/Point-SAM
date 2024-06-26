@@ -14,7 +14,7 @@ UC San Diego, Hillbot
 
 <div align="center">
 
-[![arXiv](https://img.shields.io/badge/arXiv-coming_soon-red)]()
+[![arXiv](https://img.shields.io/badge/arXiv-2406.17741-red)](https://arxiv.org/abs/2406.17741)
 [![Project Page](https://img.shields.io/badge/Project-page-yellow
 )](https://point-sam.github.io)
 [![Demo](https://img.shields.io/badge/Demo-huggingface-orange
