@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 import torch
 from torch import nn
@@ -238,7 +238,7 @@ def repeat_interleave(x: torch.Tensor, repeats: int, dim: int):
 class PatchEncoder(nn.Module):
     """Encode point patches following the PointNet structure for segmentation."""
 
-    def __init__(self, in_channels, out_channels, hidden_dims: list[int]):
+    def __init__(self, in_channels, out_channels, hidden_dims: List[int]):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
