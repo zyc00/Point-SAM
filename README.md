@@ -24,10 +24,10 @@ UC San Diego, Hillbot
 
 ### Release Schedule:
 - [x] training code
-- [x] training data
+- [x] training data (partial)
 - [x] evaluation code
-
-<span style="color:red"> **Feel free to try it and train your own point segmentation model!!** </span>
+- [x] evaluation data
+- [ ] training data (full)
 
 ### Mesh Segmentation Demo
 
