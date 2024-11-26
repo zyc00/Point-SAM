@@ -22,12 +22,18 @@ UC San Diego, Hillbot
 
 </div>
 
+<p>
+  <img src="./assets/teaser_new.png" width="100%"/>
+  <!-- <embed src="/assets/teaser_new.pdf", width="100%"> -->
+</p>
+
 ### Release Schedule:
 - [x] training code
-- [x] training data (partial)
 - [x] evaluation code
 - [x] evaluation data
-- [ ] training data (full)
+- [ ] training data
+
+We will provide the training datasets as soon as posible.
 
 ### Mesh Segmentation Demo
 
@@ -61,14 +67,10 @@ We use `accelerate` as our training framework. The training scripts are in `scri
 #### Evaluation and Inference
 We provide pretrained [checkpoint](https://huggingface.co/yuchen0187/Point-SAM/tree/main) for Point-SAM with ViT-L on HuggingFace. After downloading the checkpoint, you can inference with the following codes. For different numbers of points, we allow custom `group_number` and `group_size`. The default setting is `group_number=512` and `group_size=64`, and we suggest setting `group_number=2048` and `group_size=256` while the number of points > 100k.
 
-The evaluation code for KITTI360 is provided in `evaluation/eval_kitti.py`. You can run it by `python eval_kitti.py --config large --ckpt_path your_ckpt_path`.
+The evaluation code for KITTI360 is provided in `evaluation/eval_kitti.py`. You can run it by `python eval_kitti.py --config large --ckpt_path your_ckpt_path`. You can find the evaluation datasets in [AGILE3D](https://drive.google.com/file/d/1cqWgVlwYHRPeWJB-YJdz-mS5njbH4SnG/view?usp=sharing). We appreciate AGILE3D for providing evaluation datasets.
 
-If you want to inference with your own point clouds and prompt points.
+If you want to inference with your own point clouds and prompt points, see the codes in `evaluation/inference.py`.
 
-<p>
-  <img src="./assets/teaser_new.png" width="100%"/>
-  <!-- <embed src="/assets/teaser_new.pdf", width="100%"> -->
-</p>
 
 #### Demo Usage
 
