@@ -1,0 +1,28 @@
+_target_: pc_sam.model.pc_sam.PointCloudSAMNN
+pc_encoder:
+  _target_: pc_sam.model.pc_encoder.PointCloudEncoder
+  patch_embed:
+    _target_: pc_sam.model.pc_encoder.PatchEmbedNN
+    in_channels: 7
+    hidden_dim: 256
+    out_channels: 512  # compatible with unit3d-l
+    num_patches: 1024
+  transformer:
+    _target_: timm.create_model
+    model_name: eva02_large_patch14_448
+    pretrained: False
+  embed_dim: 256
+mask_encoder:
+  _target_: pc_sam.model.prompt_encoder.MaskEncoderNN
+  encoder_channel: 256
+  num_group: 1024
+mask_decoder:
+  _target_: pc_sam.model.mask_decoder.MaskDecoder
+  transformer_dim: 256
+  transformer:
+    _target_: pc_sam.model.transformer.TwoWayTransformer
+    depth: 2
+    embedding_dim: 256
+    num_heads: 8
+    mlp_dim: 2048
+prompt_iters: 5

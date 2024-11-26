@@ -1,0 +1,6 @@
+defaults:
+  - fusion360@dataset_dict.fusion360
+  - scannet_block@dataset_dict.scannet_block
+  - scannet@dataset_dict.scannet
+  - partnet@dataset_dict.partnet
+  - shapenet@dataset_dict.shapenet

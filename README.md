@@ -22,6 +22,11 @@ UC San Diego, Hillbot
 
 </div>
 
+### News:
+<span style="color:red"> **we just released the training and evaluation codes for Point-SAM, along with the corresponding training data.** </span>
+
+<span style="color:red"> **Feel free to try it and train your own point segmentation model!!** </span>
+
 ### Mesh Segmentation Demo
 
 Our model support mesh segmentation by sampling points from the mesh and propagate segmentation labels back to the mesh. We deployed a huggingface demo at 🤗[demo](https://huggingface.co/spaces/yuchen0187/Point-SAM)🤗. We also provide local mesh segmentation demo at https://github.com/zyc00/point-sam-demo. Some meshes in glb format are provided in [examples](https://github.com/zyc00/point-sam-demo/tree/main/examples).
@@ -46,28 +51,21 @@ git submodule update --init third_party/apex &&
 pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" third_party/apex
 ```
 
-
-Install Point-SAM from GitHub
-```
-pip install git+https://github.com/zyc00/Point-SAM.git
-```
-or clone the repository and install with
-```
-git clone https://github.com/zyc00/Point-SAM.git &&
-cd Point-SAM && pip install . && cd ..
-```
-
 ### Getting Start
+
+#### Training
+We use `accelerate` as our training framework. The training scripts are in `scripts`. For example, if you want to train Point-SAM with ViT-large encoder, run `bash scripts/train_large.sh`.
+
+#### Evaluation and Inference
 We provide pretrained [checkpoint](https://huggingface.co/yuchen0187/Point-SAM/tree/main) for Point-SAM with ViT-L on HuggingFace. After downloading the checkpoint, you can inference with the following codes. For different numbers of points, we allow custom `group_number` and `group_size`. The default setting is `group_number=512` and `group_size=64`, and we suggest setting `group_number=2048` and `group_size=256` while the number of points > 100k.
-```
-from point_sam import build_point_sam
-model = build_point_sam(ckpt_path, group_number, group_size)
-model.set_pointcloud(coords, colors)
-model.predict_masks(prompt_coords, prompt_labels)
-```
+
+The evaluation code for KITTI360 is provided in `evaluation/eval_kitti.py`. You can run it by `python eval_kitti.py --config large --ckpt_path your_ckpt_path`.
+
+If you want to inference with your own point clouds and prompt points.
 
 <p>
-  <img src="./assets/teaser.jpeg" width="100%"/>
+  <img src="./assets/teaser_new.png" width="100%"/>
+  <!-- <embed src="/assets/teaser_new.pdf", width="100%"> -->
 </p>
 
 #### Demo Usage

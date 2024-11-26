@@ -1,0 +1,8 @@
+defaults:
+  - default
+
+pc_encoder:
+  patch_embed:
+    radius: 0.1
+mask_encoder:
+  radius: 0.1

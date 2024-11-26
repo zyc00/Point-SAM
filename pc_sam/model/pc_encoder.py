@@ -7,7 +7,7 @@ import torch.nn as nn
 from timm.models.eva import Eva
 from timm.models.vision_transformer import VisionTransformer
 
-from .common import KNNGrouper, PatchEncoder
+from .common import KNNGrouper, NNGrouper, PatchEncoder
 
 
 class PatchEmbed(nn.Module):
@@ -160,3 +160,116 @@ class Block(nn.Module):
     def forward(self, x):
         # PreLN. Follow timm.models.vision_transformer
         return x + self.mlp(self.norm(x))
+
+
+class PatchEmbedNN(nn.Module):
+    def __init__(self, in_channels, hidden_dim, out_channels, num_patches) -> None:
+        super().__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        hidden_dim = hidden_dim or out_channels
+
+        self.grouper = NNGrouper(num_patches)
+        self.in_proj = nn.Linear(in_channels, hidden_dim)
+        self.blocks1 = nn.Sequential(
+            *[Block(hidden_dim, hidden_dim, hidden_dim) for _ in range(3)]
+        )
+        self.blocks2 = nn.Sequential(
+            *[Block(hidden_dim, hidden_dim, hidden_dim) for _ in range(3)]
+        )
+        self.norm = nn.LayerNorm(hidden_dim)
+        self.out_proj = nn.Linear(hidden_dim, out_channels)
+
+    def forward(self, coords: torch.tensor, features: torch.tensor):
+        patches = self.grouper(coords, features)
+        patch_features = patches["features"]  # [B, N, D]
+        nn_idx = patches["nn_idx"]  # [B, N]
+
+        x = self.in_proj(patch_features)
+        x = self.blocks1(x)  # [B, N, D]
+        y = x.new_zeros(x.shape[0], self.grouper.num_groups, x.shape[-1])
+        y.scatter_reduce_(
+            1, nn_idx.unsqueeze(-1).expand_as(x), x, "amax", include_self=False
+        )
+        x = self.blocks2(y)
+        x = self.norm(x)
+        x = self.out_proj(x)
+        patches["embeddings"] = x
+        return patches
+
+
+class PatchEmbedHier(nn.Module):
+    """PointNet++ style with hierarchical grouping."""
+
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        num_patches: list[int],
+        patch_size: list[int],
+        radius: list[float] = None,
+    ):
+        super().__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+
+        self.grouper1 = KNNGrouper(
+            num_patches[0],
+            patch_size[0],
+            radius=radius[0] if radius else None,
+        )
+        self.patch_encoder1 = PatchEncoder(in_channels, 128, [64, 128])
+
+        self.grouper2 = KNNGrouper(
+            num_patches[1],
+            patch_size[1],
+            radius=radius[1] if radius else None,
+        )
+        self.patch_encoder2 = PatchEncoder(128 + 3, out_channels, [128, 256])
+
+    def forward(self, coords: torch.Tensor, features: torch.Tensor):
+        patches1 = self.grouper1(coords, features)
+        x1 = self.patch_encoder1(patches1["features"])
+        patches1["embeddings"] = x1
+
+        patches2 = self.grouper2(patches1["centers"], x1, use_fps=False)
+        x2 = self.patch_encoder2(patches2["features"])
+        patches2["embeddings"] = x2
+
+        return [patches1, patches2]
+
+
+def main():
+    print(timm.list_models("vit_base*"))
+    # print(timm.list_models("eva02*"))
+
+    model_name = "vit_base_patch16_224"
+    # model_name = "eva02_base_patch14_448"
+    drop_path_rate = 0.2
+    transformer = timm.create_model(
+        model_name, pretrained=False, drop_path_rate=drop_path_rate
+    )
+    # patch_embed = PatchEmbed(6, 512, 512, 64)
+    # patch_embed = PatchEmbedNN(7, 256, 512, 512)
+    patch_embed = PatchEmbedHier(6, 512, [1024, 512], [32, 32])
+    pc_encoder = PointCloudEncoder(
+        patch_embed=patch_embed,
+        transformer=transformer,
+        embed_dim=512,
+    ).cuda()
+
+    points = torch.randn([2, 2048, 3]).cuda()
+    colors = torch.rand_like(points)
+    features, patches = pc_encoder(points, colors)
+    print(features.shape)
+    if isinstance(patches, list):
+        for p in patches:
+            print(p["features"].shape)
+            print(p["centers"].shape)
+    else:
+        print(patches["features"].shape)
+        print(patches["centers"].shape)
+
+
+if __name__ == "__main__":
+    main()

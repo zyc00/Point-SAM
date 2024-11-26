@@ -73,6 +73,12 @@ async function onMouseClick(event) {
     return;
   }
 
+  if (event.button == 0) {
+    positive_flag = true;
+  } else if (event.button == 2) {
+    positive_flag = false;
+  }
+
   var rect = renderer.domElement.getBoundingClientRect();
   var x = (event.clientX - rect.left) / rect.width;
   var y = (event.clientY - rect.top) / rect.height;
