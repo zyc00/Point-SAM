@@ -22,8 +22,10 @@ UC San Diego, Hillbot
 
 </div>
 
-### News:
-<span style="color:red"> **we just released the training and evaluation codes for Point-SAM, along with the corresponding training data.** </span>
+### Release Schedule:
+- [x] training code
+- [x] training data
+- [x] evaluation code
 
 <span style="color:red"> **Feel free to try it and train your own point segmentation model!!** </span>
 
