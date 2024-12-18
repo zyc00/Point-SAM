@@ -1,0 +1,6 @@
+defaults:
+  - partnet@dataset_dict.partnet
+  - scannet@dataset_dict.scannet
+  - scannet_block@dataset_dict.scannet_block
+  - fusion360@dataset_dict.fusion360
+  - partnet_mobility@dataset_dict.partnet_mobility

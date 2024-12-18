@@ -1,0 +1,3 @@
+defaults:
+  - partnet@dataset_dict.partnet
+  - scannet_block@dataset_dict.scannet_block

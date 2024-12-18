@@ -1,0 +1,16 @@
+dataset:
+  path: "SeaLab/partnet-shapenet"
+  token: "YOUR_HF_TOKEN"
+  # cache_dir: "/jigu-east-vol/huggingface/datasets"
+  split: "val"
+  keep_in_memory: False
+transforms:
+  - _target_: pc_sam.datasets.transforms.NormalizePoints
+  - _target_: pc_sam.datasets.transforms.NormalizeColor
+    mean: 0.5
+    std: 0.5
+  - _target_: pc_sam.datasets.transforms.RandomSampleMask
+    num_samples: 2
+  - _target_: pc_sam.datasets.transforms.RandomSample
+    num_samples: ${num_samples}
+  - _target_: pc_sam.datasets.transforms.ToTensor

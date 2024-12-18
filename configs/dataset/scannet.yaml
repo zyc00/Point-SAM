@@ -1,0 +1,22 @@
+dataset:
+  path: "SeaLab/ScanNet"
+  token: "YOUR_HF_TOKEN"
+  split: 'train'
+  keep_in_memory: False
+  # revision: "YOUR_HF_TOKEN"
+transforms:
+  - _target_: pc_sam.datasets.transforms.NormalizePoints
+  - _target_: pc_sam.datasets.transforms.NormalizeColor
+    mean: 0.5
+    std: 0.5
+  - _target_: pc_sam.datasets.transforms.RandomSampleMask
+    num_samples: 2
+  # - _target_: pc_sam.datasets.transforms.PadPoints
+  #   num_points: ${num_samples}
+  - _target_: pc_sam.datasets.transforms.RandomSample
+    num_samples: ${num_samples}
+  - _target_: pc_sam.datasets.transforms.RandomScale
+    low: 0.8
+    high: 1.0
+  - _target_: pc_sam.datasets.transforms.RandomRotateAlongAxis
+  - _target_: pc_sam.datasets.transforms.ToTensor

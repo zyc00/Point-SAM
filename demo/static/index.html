@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Directory Browser</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script type="importmap"> 
+        { 
+            "imports": { 
+                "three": "https://unpkg.com/three@0.162.0/build/three.module.js", 
+                "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/" 
+             } 
+        } 
+    </script>
+</head>
+
+<body>
+<div id="container">
+    <div id="sidebar">
+        <div id="tool-box">
+            <button id="annotate-positive">Positive Prompt</button>
+            <button id="annotate-negative">Negative Prompt</button>
+            <button id="annotate-next">Next Mask</button>
+            <button id="save-result">Save Annotation</button>
+            <button id="clear-result">Clear Annotation</button>
+        </div>
+    </div>
+    <div id="preview">
+        <canvas id="viewer"></canvas>
+    </div>
+    </div>
+</div>
+<script type="module">
+    function test() {
+        console.log("test");
+    }
+</script>
+<script type="module" src="/static/viewer.js"></script>
+<script type="module" src="/static/annotate.js"></script>
+</body>
+
+</html>

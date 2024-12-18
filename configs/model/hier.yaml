@@ -1,0 +1,29 @@
+_target_: pc_sam.model.pc_sam.PointCloudSAMHier
+pc_encoder:
+  _target_: pc_sam.model.pc_encoder.PointCloudEncoder
+  patch_embed:
+    _target_: pc_sam.model.pc_encoder.PatchEmbedHier
+    in_channels: 6
+    out_channels: 512
+    num_patches: [2048, 512]
+    patch_size: [32, 32]
+    radius: [0.05, 0.1]
+  transformer:
+    _target_: timm.create_model
+    model_name: eva02_large_patch14_448
+    pretrained: False
+  embed_dim: 256
+mask_encoder:
+  _target_: pc_sam.model.prompt_encoder.MaskEncoderHier
+  embed_dim: 256
+  radius: [0.05, 0.1]
+mask_decoder:
+  _target_: pc_sam.model.mask_decoder.MaskDecoderHier
+  transformer_dim: 256
+  transformer:
+    _target_: pc_sam.model.transformer.TwoWayTransformer
+    depth: 2
+    embedding_dim: 256
+    num_heads: 8
+    mlp_dim: 2048
+prompt_iters: 8
