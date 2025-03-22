@@ -1,18 +1,32 @@
+import hydra
+from omegaconf import OmegaConf
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from utils import load_ply
 import numpy as np
-from point_sam import build_point_sam
 import torch
 import os
 import numpy as np
 import argparse
+from pc_sam.model.pc_sam import PointCloudSAM
+from pc_sam.utils.torch_utils import replace_with_fused_layernorm
+from pc_sam.model.loss import compute_iou
+from safetensors.torch import load_model
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--host", type=str, default="localhost")
 parser.add_argument("--port", type=int, default=5000)
 parser.add_argument("--checkpoint", type=str, default="pretrained/model.safetensors")
 parser.add_argument("--pointcloud", type=str, default="scene.ply")
+parser.add_argument(
+    "--config", type=str, default="large", help="path to config file"
+)
+parser.add_argument("--config_dir", type=str, default="../configs")
+parser.add_argument(
+    "--ckpt_path",
+    type=str,
+    default="./pretrained/ours/mixture_10k_giant/model.safetensors",
+)
 args = parser.parse_args()
 
 # PCSAM variables
@@ -31,7 +45,27 @@ CORS(
 )
 
 # change "./pretrained/model.safetensors" to the path of the checkpoint
-sam = build_point_sam("./pretrained/model.safetensors").cuda()
+
+# ---------------------------------------------------------------------------- #
+# Load configuration
+# ---------------------------------------------------------------------------- #
+with hydra.initialize(args.config_dir, version_base=None):
+    cfg = hydra.compose(config_name=args.config)
+    OmegaConf.resolve(cfg)
+    # print(OmegaConf.to_yaml(cfg))
+
+
+# ---------------------------------------------------------------------------- #
+# Setup model
+# ---------------------------------------------------------------------------- #
+model = hydra.utils.instantiate(cfg.model)
+model.apply(replace_with_fused_layernorm)
+
+# ---------------------------------------------------------------------------- #
+# Load pre-trained model
+# ---------------------------------------------------------------------------- #
+load_model(model, args.ckpt_path)
+sam = model
 
 
 @app.route("/")
